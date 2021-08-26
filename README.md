@@ -18,4 +18,6 @@ https://www.cryptokitties.co/
 This code is a part of cyptozombies.io course
 https://cryptozombies.io
 
+ownable.sol is a contract from the openzeppelin library 
+
 

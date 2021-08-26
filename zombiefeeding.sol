@@ -20,12 +20,13 @@ contract KittyInterface {
 
 contract ZombieFeeding is ZombieFactory {
 
+  KittyInterface kittyContract;
+  //gets address of the CryptoKitties contract
+  function setKittyContractAddress(address _address) external {
+    kittyContract = KittyInterface(_address);
+  }
   function feedAndMultiply(uint _zombieId, uint _targetDna) public {
 
-    //address of the CryptoKitties contract
-    address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
-    // Initialize kittyContract here using `ckAddress`
-    KittyInterface kittyContract = KittyInterface(ckAddress);
 
     //make sure person calling the contract is the owner of the zombie
     require(msg.sender == zombieToOwner[_zombieId]);
@@ -51,15 +52,16 @@ contract ZombieFeeding is ZombieFactory {
 }
 /*Solidity tips
 
-internal is the same as private, 
-except that it's also accessible 
-to contracts that inherit from this contract. 
-  
+internal  
+  is the same as private, 
+  except that it's also accessible 
+  to contracts that inherit from this contract.
 
-external is similar to public, 
-except that these functions
- can ONLY be called outside the contract 
- — they can't be called by other functions inside that contract.
+external 
+  external is similar to public, 
+  except that these functions
+  can ONLY be called outside the contract 
+  — they can't be called by other functions inside that contract.
 
  For our contract to talk to another contract on the blockchain that we don't own, 
  first we need to define an interface.

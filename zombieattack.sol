@@ -11,6 +11,22 @@ contract ZombieAttack is ZombieHelper {
     return uint(keccak256(abi.encodePacked(now, msg.sender, randNonce))) % _modulus;
   }
 
-  function attack(uint _zombieId, uint _targetId) external {
+  function attack(uint _zombieId, uint _targetId) external ownerOf( _zombieId) {
+    Zombie storage myZombie = zombies[_zombieId];
+    Zombie storage enemyZombie = zombies[_targetId];
+    uint rand = randMod(100);
+    //if myZombie wins
+    if(rand <= attackVictoryProbability){
+      myZombie.winCount ++;
+      myZombie.level ++;
+      enemyZombie.lossCount++;
+      feedAndMultiply(_zombieId, enemyZombie.dna, "zombie");
+    } else {
+      myZombie.lossCount++;
+      enemyZombie.winCount++;
+      _triggerCooldown(myzombie);
+
+    }
+    
   }
 }

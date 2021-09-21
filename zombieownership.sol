@@ -4,11 +4,12 @@
 pragma solidity >=0.5.0 <0.6.0;
 
 import "./zombieattack.sol";
-
-// when implementing a token contract have to import it
 import "./erc721.sol";
+import "./safemath.sol";
 
-// Declare ERC721 inheritance here
+// if someone who is not owner calls transferFrom with _tokenId we can use this mapping
+//to quickly look up if he/she is approved to use that token 
+mapping (uint => address) zombieApprovals;
 contract ZombieOwnership is ZombieAttack , ERC721{
   function balanceOf(address _owner) external view returns (uint256) {
     // This function simply takes an address, and returns how many tokens that address owns.
@@ -22,12 +23,29 @@ contract ZombieOwnership is ZombieAttack , ERC721{
     return zombieToOwner[_tokenId];
   }
 
-  function transferFrom(address _from, address _to, uint256 _tokenId) external payable {
-
+  //transfters zombies from one owner to another
+  function _transfer(address _from, address _to, uint256 _tokenId) private {
+    ownerZombieCount[_to] = ownerZombieCount[_to].add(1);
+    ownerZombieCount[_from] = ownerZombieCount[_from].sub(1);
+    zombieToOwner[_tokenId] = _to;
+    emit Transfer(_from , _to , _tokenId);
   }
 
-  function approve(address _approved, uint256 _tokenId) external payable {
+  function transferFrom(address _from, address _to, uint256 _tokenId) external payable {
+      require(zomieToOwner[_tokenId] == msg.sender || zombieApprovals[_tokenId] ==msg.sender);
+      _transfer(_from, _to , _tokenId);
+  }
 
+  // owner calls approve 
+  // 1 give it the address of the new owner and tokenId you want him to take
+  // 2 the new owner calls transferFrom with the _tokenId then the contract checks 
+  //   to make sure then new owner has been approved
+
+  //use zombieApprovals mapping as defined in this .sol contract to store who's been approved
+  function approve(address _approved, uint256 _tokenId) external payable onlyOwnerOf(_tokenId){
+    zombieApprovals[_tokenId] = _approved;
+    //emit Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
+    emit Approval(msg.sender, _approved , _tokenId);
   }
 }
 
@@ -66,7 +84,31 @@ ERC721 standard:
 
   function balanceOf(address _owner) external view returns (uint256);
   function ownerOf(uint256 _tokenId) external view returns (address);
+
+
+
   function transferFrom(address _from, address _to, uint256 _tokenId) external payable;
+
+    //called by sender
+    // the token's owner calls transferFrom with his address as the _from parameter, 
+    //the address he wants to transfer to as the _to parameter, and the _tokenId of the 
+    //token he wants to transfer
+
+    
+
   function approve(address _approved, uint256 _tokenId) external payable;
+
+    //called by receiver
+    //The  token's owner first calls approve with the address he wants to transfer to, 
+    //and the _tokenID . The contract then stores who is approved to take a token, 
+
+    //usually in a mapping (uint256 => address). 
+
+    //Then, when the owner or the approved address calls transferFrom, 
+    //the contract checks if that msg.sender is the owner or
+    //is approved by the owner to take the token, and if so it transfers the token to him.
+
+    //tldr call approve and give it the _approved address of the new owner, and the _tokenId you want 
+    // them to take
   }
 */

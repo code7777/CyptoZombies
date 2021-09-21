@@ -10,11 +10,16 @@ zombiefactory.sol makes new zombies
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 import "./ownable.sol";
+import "./safemath.sol";
+
+
+
 
 contract ZombieFactory is Ownable{
 
+    
+    using SafeMath for uint256;
     //  a zombie has an id , name , and dna
-
     event NewZombie(uint zombieId, string name, uint dna);
 
     //dna cannot be more than 16 digits

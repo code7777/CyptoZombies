@@ -25,6 +25,7 @@ https://www.cryptokitties.co/
 
 
 zombiehelper.sol dictates when the zombies level up it is a child of the zombiefeeding class
+
     *users can change the zombies name above level 2
 
     *above level 20 the user can change the zombies DNA to a custom DNA
@@ -32,6 +33,6 @@ zombiehelper.sol dictates when the zombies level up it is a child of the zombief
     *you can also view a users entire zombie army 
 
 zombieownership.sol is an ERC721 Implementation of zombie ownership
-    can transfer zombies, see blaance, etc
+    can transfer zombies, see balance, etc
 
 
